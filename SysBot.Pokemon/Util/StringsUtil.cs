@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Text;
 
@@ -18,8 +19,15 @@ public static class StringsUtil
     /// <returns>True if spam, false if natural.</returns>
     public static bool IsSpammyString(string text)
     {
-        // No longer checks the content of the string.
-        // This allows any name to be used.
+        if (text.IndexOfAny(Blacklist) >= 0)
+            return true;
+
+        var sanitized = Sanitize(text);
+        if (TLD.Any(s => sanitized.Contains(s, StringComparison.OrdinalIgnoreCase)))
+            return true;
+        if (TLD2.Any(s => sanitized.Contains(s, StringComparison.OrdinalIgnoreCase)))
+            return true;
+
         return false;
     }
 
